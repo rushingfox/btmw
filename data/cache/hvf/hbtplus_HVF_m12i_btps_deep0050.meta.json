@@ -1,0 +1,9 @@
+{
+  "sim_label": "m12i_btps_deep",
+  "snapshot_num": 50,
+  "host_m200c_in_1e10Msun": 93.79063415527344,
+  "host_r200c_in_Mpc": 0.2015342116355896,
+  "host_r100c_in_Mpc": 0.26974305510520935,
+  "V200c_in_cgs": 14145241.996539185,
+  "n_subhalos_in_R100c": 7777
+}

@@ -1,0 +1,6 @@
+## Source: Hellwing et al. (2016), The Copernicus Complexio (COCO), MNRAS 457, 3492
+## doi: 10.1093/mnras/stw214
+## Best-fit power-law to subhalo mass function within R50c (plotted as black dashed line in COCO paper)
+## Columns: log10(mu)  log10(N(>mu))  where mu = M_sub/M200
+-6.810032702	4.780461333
+-0.474890378	-1.297224922

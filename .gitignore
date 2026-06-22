@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+build/
+dist/
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Jupyter
+.ipynb_checkpoints/
+
+# pytest
+.pytest_cache/
+
+# OS
+.DS_Store
+
+# Repo-specific: large generated outputs.
+# figures/ is tracked so the paper PNGs are reproducible from git.
+# Raw simulation outputs are NOT in this repo.
+logs/*.err
+logs/*.out
+logs/joberr_*
+logs/jobout_*
+!logs/.gitkeep
+
+# Local environments / installs
+.env
+venv/
+.venv/

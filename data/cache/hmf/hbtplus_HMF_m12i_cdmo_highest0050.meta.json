@@ -1,0 +1,7 @@
+{
+  "sim_label": "m12i_cdmo_highest",
+  "snapshot_num": 50,
+  "host_m200c_in_1e10Msun": 95.50775146484375,
+  "host_r200c_in_Mpc": 0.20275667309761047,
+  "n_subhalos_in_R50c": 31834
+}

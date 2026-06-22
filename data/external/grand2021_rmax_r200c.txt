@@ -1,0 +1,15 @@
+## This file was renamed from rockstar_r200c.txt -> robert2021_r200c.txt -> grand2021_rmax_r200c.txt
+## Source: Grand, Robert J. J. & White, Simon D. M. (2021), MNRAS 501, 3558
+## doi: 10.1093/mnras/staa3993
+## Referred to as "Robert result" in figure legends
+## Subhalos within R200c; used for R vs V plots
+## Columns: Vmax [km/s]  Rmax [kpc]
+4.1227	0.54664
+6.7906	0.68005
+10.0287	0.86198
+14.2126	1.13011
+20.5782	1.97456
+30.678	3.1475
+39.65	4.1785
+44.32	4.7201
+65.589	7.853

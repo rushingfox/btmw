@@ -1,0 +1,20 @@
+## Source: Springel et al. (2008), The Aquarius Project, MNRAS 391, 1685
+## doi: 10.1111/j.1365-2966.2008.14066.x
+## Digitized from Fig. 11 upper dashed curve: Aquarius A1 subhalo radial number-density profile
+## Columns: log10(r/kpc)  log10(n(r)/<n>)
+## Note: Aquarius A1 R200c ~ 245 kpc; code plots x = 10^col0 / 245
+0.4813	1.49938
+0.89626	1.43066
+1.21713	1.33854
+1.55971	1.17481
+1.74789	1.03565
+1.89264	0.90624
+1.98914	0.78182
+2.02533	0.74351
+2.19421	0.50909
+2.29313	0.28931
+2.43546	-0.00696
+2.63812	-0.57526
+2.86731	-1.54894
+2.95416	-1.97845
+3	-2.18844

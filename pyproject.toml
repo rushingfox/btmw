@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "btmw"
+version = "0.1.0"
+description = "Paper-plot pipeline for the Blue-Tilt Milky-Way subhalo analysis (arXiv:2412.16072)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Jianhao Wu", email = "jianhao.wu@link.cuhk.edu.hk" },
+    { name = "Tsang Keung Chan", email = "tsangkeungchan@cuhk.edu.hk" },
+    { name = "Victor J. Forouhar Moreno" },
+]
+keywords = [
+    "cosmology",
+    "dark matter",
+    "subhalos",
+    "halo finder",
+    "blue tilt",
+    "primordial power spectrum",
+    "SWIFT",
+    "HBT-HERONS",
+    "VELOCIraptor",
+    "SOAP",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "h5py>=3.8",
+    "unyt>=2.9",
+    "pyyaml>=6.0",
+    "swiftsimio==12.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff>=0.5", "pytest>=7"]
+
+[project.urls]
+"arXiv" = "https://arxiv.org/abs/2412.16072"
+"PRD"   = "https://doi.org/10.1103/59fw-974t"
+"Repository" = "https://github.com/rushingfox/btmw"
+
+[project.scripts]
+btmw = "btmw.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: regression tests requiring raw simulation/archive data or long I/O",
+]
+

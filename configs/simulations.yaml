@@ -1,0 +1,126 @@
+# btmw — simulations.yaml
+#
+# Paths to the 9 zoom-in simulations used in the paper. Set the environment
+# variable BTMW_SIM_ROOT to the directory that contains the simulation
+# folders. If your layout differs, also adjust the path templates.
+#
+# Layout (fiducial resolution, m12i / m12f, three power-spectrum models):
+#   $BTMW_SIM_ROOT/{label}/                          # SWIFT outputs (snapshots, raw VR)
+#   $BTMW_SIM_ROOT/{label}_fof/                      # halo-finder outputs (SOAP, HBT, VR-SOAP)
+#       soap_min_20/SOAP_uncompressed/halo_properties_{snap:04d}.hdf5     # HBT-HERONS -> SOAP
+#       hbtplus_min_20/{snap:03d}/SubSnap_{snap:03d}.<rank>.hdf5          # HBT-HERONS raw
+#       soap_VR_Aquarius_01_without_LRS/SOAP_uncompressed/halo_properties_{snap:04d}.hdf5  # VR -> SOAP
+#   $BTMW_SIM_ROOT/{label}/velociraptor_{snap:04d}_Aquarius_01_without_LRS/output.<which>.0  # VR raw
+#   $BTMW_SIM_ROOT/{label}/{label}_{snap:04d}.hdf5   # SWIFT snapshot
+#
+# Snapshot numbering convention:
+#   m12i family: snap 0050 (z=0).
+#   m12f family: snap 0049 (z=0).
+
+# Path templates (relative to BTMW_SIM_ROOT unless noted). They use Python
+# str.format placeholders {label} and {snap}; btmw resolves these at
+# runtime.
+path_templates:
+  snapshot:           "{label}/{label}_{snap:04d}.hdf5"
+  soap_hbt:           "{label}_fof/soap_min_20/SOAP_uncompressed/halo_properties_{snap:04d}.hdf5"
+  hbt_subsnap_dir:    "{label}_fof/hbtplus_min_20/{snap:03d}"
+  hbt_subsnap_glob:   "SubSnap_{snap:03d}.*.hdf5"
+  soap_vr:            "{label}_fof/soap_VR_Aquarius_01_without_LRS/SOAP_uncompressed/halo_properties_{snap:04d}.hdf5"
+  vr_raw_dir:         "{label}/velociraptor_{snap:04d}_Aquarius_01_without_LRS"
+  vr_raw_basename:    "output"      # so e.g. output.properties.0
+
+# ---------------------------------------------------------------------------
+# Fiducial-resolution simulations (six runs: three power-spectrum models for
+# each of the m12i and m12f Milky-Way-mass hosts)
+# ---------------------------------------------------------------------------
+
+simulations:
+
+  m12i_cdmo:
+    host: m12i
+    model: PL                # power-law / "vanilla" CDM
+    resolution: fiducial
+    snapshot_num: 50
+    has_vr: true             # used by figs 11, 12, 13, 14
+
+  m12i_btps_deep:
+    host: m12i
+    model: BT_deep
+    resolution: fiducial
+    snapshot_num: 50
+    has_vr: true
+
+  m12i_btps_soft:
+    host: m12i
+    model: BT_soft
+    resolution: fiducial
+    snapshot_num: 50
+    has_vr: true
+
+  m12f_cdmo:
+    host: m12f
+    model: PL
+    resolution: fiducial
+    snapshot_num: 49
+    has_vr: true
+
+  m12f_btps_deep:
+    host: m12f
+    model: BT_deep
+    resolution: fiducial
+    snapshot_num: 49
+    has_vr: true
+
+  m12f_btps_soft:
+    host: m12f
+    model: BT_soft
+    resolution: fiducial
+    snapshot_num: 49
+    has_vr: true
+
+  # -------------------------------------------------------------------------
+  # High-resolution m12i runs (resolution-study figures 15-18). VR-SOAP not
+  # needed at this resolution (the paper's halo-finder comparison is only at
+  # fiducial resolution).
+  # -------------------------------------------------------------------------
+
+  m12i_cdmo_highest:
+    host: m12i
+    model: PL
+    resolution: high
+    snapshot_num: 50
+    has_vr: false
+
+  m12i_btps_deep_highest:
+    host: m12i
+    model: BT_deep
+    resolution: high
+    snapshot_num: 50
+    has_vr: false
+
+  m12i_btps_soft_highest:
+    host: m12i
+    model: BT_soft
+    resolution: high
+    snapshot_num: 50
+    has_vr: false
+
+# ---------------------------------------------------------------------------
+# Per-host particle masses (DM, SWIFT internal units of 1e10 Msun, h-free).
+# Used by the unresolved-region shading (min_npart=20) on figs 6/7/15/16.
+# Values come from the original Type-1 ipynbs in
+# paper_figures_min_20_HBTplus_v1_archive/.
+# ---------------------------------------------------------------------------
+
+particle_mass_in_swift_unit:
+  # fiducial resolution (zoom HRS): 4.2248334e-06 * 1e10 Msun = 4.2248334e4 Msun
+  fiducial: 4.2248334e-06
+  # high resolution: 8x more particles -> 1/8 mass each
+  # Verified from MUSIC IC log (m12i_btps_deep_highest/IC/jobout_1596459):
+  #   particle mass = 3707.29 h-1 Msun = 3707.29/0.702/1e10 = 5.2810e-07 (h-free 1e10 Msun)
+  high: 5.2810417e-07
+
+# Selection thresholds reused across figures.
+defaults:
+  min_npart: 20            # halo-finder lower limit reflected by *_min_20 paths
+  r50c_over_r200c: 1.66    # COCO empirical relation, used by HMF / CMF / HRF

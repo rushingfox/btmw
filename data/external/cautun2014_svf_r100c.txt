@@ -1,0 +1,13 @@
+## This file was renamed from cocoblack_velocity.txt -> cautun2014_r100c_fit.txt -> cautun2014_svf_r100c.txt
+## Source: Cautun et al. (2014), MNRAS 445, 1820
+## doi: 10.1093/mnras/stu1829
+## Cautun fit for subhalo velocity function within R100c
+## Columns: log10(nu)  log10(N(>nu))  where nu = Vmax/V200
+-2.01231	4.83091
+-0.33758	-0.29941
+-0.2421	-0.60999
+-0.19913	-0.82855
+-0.15098	-1.08162
+-0.09916	-1.4037
+-0.07075	-1.76029
+-0.04962	-1.9846
