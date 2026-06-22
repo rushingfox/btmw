@@ -1,0 +1,54 @@
+{
+  "title": "btmw: Paper-plot pipeline for Blue-Tilt Milky-Way Subhalos",
+  "description": "Paper-plot pipeline that reproduces every figure in: J. Wu, T. K. Chan, V. J. Forouhar Moreno, \"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum\", Phys. Rev. D 112, 023512 (2025). arXiv:2412.16072. Intermediate per-figure caches are checked in so each figure can be regenerated quickly without access to the raw simulation data.",
+  "upload_type": "software",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Wu, Jianhao",
+      "affiliation": "The Chinese University of Hong Kong",
+      "orcid": "0009-0000-7431-7885"
+    },
+    {
+      "name": "Chan, Tsang Keung",
+      "affiliation": "The Chinese University of Hong Kong",
+      "orcid": "0000-0003-2544-054X"
+    },
+    {
+      "name": "Forouhar Moreno, Victor J.",
+      "affiliation": "Leiden Observatory",
+      "orcid": "0000-0003-1308-9908"
+    }
+  ],
+  "keywords": [
+    "cosmology",
+    "dark matter",
+    "subhalos",
+    "blue tilt",
+    "primordial power spectrum",
+    "Milky Way",
+    "zoom-in simulations",
+    "SWIFT",
+    "HBT-HERONS",
+    "VELOCIraptor",
+    "SOAP",
+    "early universe"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.1103/59fw-974t",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "2412.16072",
+      "relation": "isSupplementTo",
+      "scheme": "arxiv"
+    },
+    {
+      "identifier": "10.5281/zenodo.20805010",
+      "relation": "isSupplementedBy",
+      "scheme": "doi"
+    }
+  ]
+}
