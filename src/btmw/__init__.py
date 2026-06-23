@@ -1,4 +1,4 @@
-"""btmw — Blue-Tilt Milky-Way subhalo paper-plot pipeline.
+"""btmw — Analysis code for Blue-Tilt Milky-Way simulations.
 
 See the top-level README for the figure mapping and reproduction steps.
 """

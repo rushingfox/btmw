@@ -1,4 +1,4 @@
-# btmw — Blue-Tilt Milky-Way Subhalos
+# btmw — Blue-Tilt Milky-Way simulations
 
 [![arXiv](https://img.shields.io/badge/arXiv-2412.16072-b31b1b.svg)](https://arxiv.org/abs/2412.16072)
 [![DOI](https://img.shields.io/badge/PRD-10.1103%2F59fw--974t-1f6feb.svg)](https://doi.org/10.1103/59fw-974t)
@@ -223,7 +223,7 @@ No external power-spectrum or `c(M)` model is needed for this paper; `colossus` 
 If you use this pipeline, please cite the paper:
 
 ```bibtex
-@ARTICLE{Wu2025BlueTiltMWSubhalos,
+@ARTICLE{Wu2025BlueTiltMW,
        author = {{Wu}, Jianhao and {Chan}, Tsang Keung and {Forouhar Moreno}, Victor J.},
         title = "{Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum}",
       journal = {\prd},

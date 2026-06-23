@@ -34,3 +34,7 @@ logs/jobout_*
 .env
 venv/
 .venv/
+
+# Generated data archive (uploaded to Zenodo separately)
+btmw_raw_data.tar.gz
+btmw_raw_data/

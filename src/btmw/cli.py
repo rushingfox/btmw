@@ -182,7 +182,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="btmw",
         description=(
-            "Paper-plot pipeline for the Blue-Tilt Milky-Way subhalo analysis "
+            "Analysis code for Blue-Tilt Milky-Way simulations "
             "(arXiv:2412.16072)."
         ),
     )

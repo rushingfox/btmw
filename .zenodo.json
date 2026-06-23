@@ -1,6 +1,6 @@
 {
-  "title": "btmw: Paper-plot pipeline for Blue-Tilt Milky-Way Subhalos",
-  "description": "Paper-plot pipeline that reproduces every figure in: J. Wu, T. K. Chan, V. J. Forouhar Moreno, \"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum\", Phys. Rev. D 112, 023512 (2025). arXiv:2412.16072. Intermediate per-figure caches are checked in so each figure can be regenerated quickly without access to the raw simulation data.",
+  "title": "btmw: Analysis code for Blue-Tilt Milky-Way simulations",
+  "description": "Analysis code that reproduces every figure in: J. Wu, T. K. Chan, V. J. Forouhar Moreno, \"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum\", Phys. Rev. D 112, 023512 (2025). arXiv:2412.16072. Intermediate per-figure caches are checked in so each figure can be regenerated quickly without access to the raw simulation data. Raw simulation data are available at https://doi.org/10.5281/zenodo.20805010. If you use this code in your research, please cite the paper and this repository: J. Wu, T. K. Chan, V. J. Forouhar Moreno, Phys. Rev. D 112, 023512 (2025), https://doi.org/10.1103/59fw-974t; and J. Wu, T. K. Chan, V. J. Forouhar Moreno, btmw: Analysis code for Blue-Tilt Milky-Way simulations (2026), https://doi.org/10.5281/zenodo.20805091.",
   "upload_type": "software",
   "license": "MIT",
   "creators": [
@@ -38,17 +38,20 @@
     {
       "identifier": "10.1103/59fw-974t",
       "relation": "isSupplementTo",
-      "scheme": "doi"
+      "scheme": "doi",
+      "resource_type": "publication"
     },
     {
       "identifier": "2412.16072",
       "relation": "isSupplementTo",
-      "scheme": "arxiv"
+      "scheme": "arxiv",
+      "resource_type": "publication"
     },
     {
       "identifier": "10.5281/zenodo.20805010",
       "relation": "isSupplementedBy",
-      "scheme": "doi"
+      "scheme": "doi",
+      "resource_type": "dataset"
     }
   ]
 }
