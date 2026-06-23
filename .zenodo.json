@@ -1,6 +1,6 @@
 {
   "title": "btmw: Analysis code for Blue-Tilt Milky-Way simulations",
-  "description": "Analysis code that reproduces every figure in: J. Wu, T. K. Chan, V. J. Forouhar Moreno, \"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum\", Phys. Rev. D 112, 023512 (2025). arXiv:2412.16072. Intermediate per-figure caches are checked in so each figure can be regenerated quickly without access to the raw simulation data. Raw simulation data are available at https://doi.org/10.5281/zenodo.20805010. If you use this code in your research, please cite the paper and this repository: J. Wu, T. K. Chan, V. J. Forouhar Moreno, Phys. Rev. D 112, 023512 (2025), https://doi.org/10.1103/59fw-974t; and J. Wu, T. K. Chan, V. J. Forouhar Moreno, btmw: Analysis code for Blue-Tilt Milky-Way simulations (2026), https://doi.org/10.5281/zenodo.20805091.",
+  "description": "Analysis code that reproduces every figure in:\n\nJ. Wu, T. K. Chan, V. J. Forouhar Moreno, \"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum\", Phys. Rev. D 112, 023512 (2025). arXiv:2412.16072.\n\nIntermediate per-figure caches are checked in so each figure can be regenerated quickly without access to the raw simulation data.\n\nRaw simulation data are available at https://doi.org/10.5281/zenodo.20805009.\n\nIf you use this code in your research, please cite the paper and this repository:\n\nJ. Wu, T. K. Chan, V. J. Forouhar Moreno,\nPhys. Rev. D 112, 023512 (2025). https://doi.org/10.1103/59fw-974t\n\nJ. Wu, T. K. Chan, V. J. Forouhar Moreno,\nbtmw: Analysis code for Blue-Tilt Milky-Way simulations (2026). https://doi.org/10.5281/zenodo.20805091",
   "upload_type": "software",
   "license": "MIT",
   "creators": [
@@ -48,7 +48,7 @@
       "resource_type": "publication"
     },
     {
-      "identifier": "10.5281/zenodo.20805010",
+      "identifier": "10.5281/zenodo.20805009",
       "relation": "isSupplementedBy",
       "scheme": "doi",
       "resource_type": "dataset"

@@ -3,7 +3,7 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2412.16072-b31b1b.svg)](https://arxiv.org/abs/2412.16072)
 [![DOI](https://img.shields.io/badge/PRD-10.1103%2F59fw--974t-1f6feb.svg)](https://doi.org/10.1103/59fw-974t)
 [![Zenodo code](https://zenodo.org/badge/DOI/10.5281/zenodo.20805091.svg)](https://doi.org/10.5281/zenodo.20805091)
-[![Zenodo data](https://zenodo.org/badge/DOI/10.5281/zenodo.20805010.svg)](https://doi.org/10.5281/zenodo.20805010)
+[![Zenodo data](https://zenodo.org/badge/DOI/10.5281/zenodo.20805009.svg)](https://doi.org/10.5281/zenodo.20805009)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Jianhao Wu** [![ORCID](https://img.shields.io/badge/ORCID-0009--0000--7431--7885-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0000-7431-7885) (CUHK) · **Tsang Keung Chan** [![ORCID](https://img.shields.io/badge/ORCID-0000--0003--2544--054X-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0000-0003-2544-054X) (CUHK) · **Victor J. Forouhar Moreno** [![ORCID](https://img.shields.io/badge/ORCID-0000--0003--1308--9908-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0000-0003-1308-9908) (Leiden Observatory)
@@ -30,7 +30,7 @@ This repository reproduces every figure in the paper from raw simulation outputs
 
 The raw simulation outputs (SOAP catalogues, HBT-HERONS catalogues, VELOCIraptor catalogues, SWIFT snapshots) are archived separately on Zenodo:
 
-> **Raw data:** [10.5281/zenodo.20805010](https://doi.org/10.5281/zenodo.20805010)
+> **Raw data:** [10.5281/zenodo.20805009](https://doi.org/10.5281/zenodo.20805009)
 
 Download and extract the archive, then point `BTMW_SIM_ROOT` to the extracted directory (see [Configuration](#configuration)). The raw data is only needed if you want to re-extract figures from scratch with `--refresh` or run `projection-map`; all other figures can be reproduced from the checked-in caches without it.
 
@@ -269,7 +269,7 @@ archivePrefix = {arXiv},
 
 > J. Wu, T. K. Chan, V. J. Forouhar Moreno,
 > *btmw: Raw data for Blue-Tilt Milky-Way simulations* (2026).
-> [10.5281/zenodo.20805010](https://doi.org/10.5281/zenodo.20805010)
+> [10.5281/zenodo.20805009](https://doi.org/10.5281/zenodo.20805009)
 
 ---
 
