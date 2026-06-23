@@ -8,7 +8,7 @@
 
 **Jianhao Wu** [![ORCID](https://img.shields.io/badge/ORCID-0009--0000--7431--7885-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0000-7431-7885) (CUHK) · **Tsang Keung Chan** [![ORCID](https://img.shields.io/badge/ORCID-0000--0003--2544--054X-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0000-0003-2544-054X) (CUHK) · **Victor J. Forouhar Moreno** [![ORCID](https://img.shields.io/badge/ORCID-0000--0003--1308--9908-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0000-0003-1308-9908) (Leiden Observatory)
 
-Paper-plot pipeline for the **blue-tilt primordial power-spectrum × Milky-Way subhalo statistics** analysis presented in:
+Analysis code for the **blue-tilt primordial power-spectrum × Milky-Way simulation** analysis presented in:
 
 > J. Wu, T. K. Chan, V. J. Forouhar Moreno,
 > *"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum"*,
@@ -23,6 +23,20 @@ This repository reproduces every figure in the paper from raw simulation outputs
   <br>
   <em>Figure 4 — DM mass projection (200 kpc half-width) of the m12i zoom-in halo under three primordial power spectra: PL (left), BT_deep (centre), BT_soft (right).</em>
 </p>
+
+---
+
+## Data
+
+The raw simulation outputs (SOAP catalogues, HBT-HERONS catalogues, VELOCIraptor catalogues, SWIFT snapshots) are archived separately on Zenodo:
+
+> **Raw data:** [10.5281/zenodo.20805010](https://doi.org/10.5281/zenodo.20805010)
+
+Download and extract the archive, then point `BTMW_SIM_ROOT` to the extracted directory (see [Configuration](#configuration)). The raw data is only needed if you want to re-extract figures from scratch with `--refresh` or run `projection-map`; all other figures can be reproduced from the checked-in caches without it.
+
+This code repository itself is also archived on Zenodo:
+
+> **Code:** [10.5281/zenodo.20805091](https://doi.org/10.5281/zenodo.20805091)
 
 ---
 
@@ -220,7 +234,9 @@ No external power-spectrum or `c(M)` model is needed for this paper; `colossus` 
 
 ## Citation
 
-If you use this pipeline, please cite the paper:
+If you use this code or data in your research, please cite the paper, this code repository, and the raw data archive:
+
+**Paper:**
 
 ```bibtex
 @ARTICLE{Wu2025BlueTiltMW,
@@ -242,6 +258,18 @@ archivePrefix = {arXiv},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System}
 }
 ```
+
+**Code:**
+
+> J. Wu, T. K. Chan, V. J. Forouhar Moreno,
+> *btmw: Analysis code for Blue-Tilt Milky-Way simulations* (2026).
+> [10.5281/zenodo.20805091](https://doi.org/10.5281/zenodo.20805091)
+
+**Raw simulation data:**
+
+> J. Wu, T. K. Chan, V. J. Forouhar Moreno,
+> *btmw: Raw data for Blue-Tilt Milky-Way simulations* (2026).
+> [10.5281/zenodo.20805010](https://doi.org/10.5281/zenodo.20805010)
 
 ---
 
