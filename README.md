@@ -261,15 +261,31 @@ archivePrefix = {arXiv},
 
 **Code:**
 
-> J. Wu, T. K. Chan, V. J. Forouhar Moreno,
-> *btmw: Analysis code for Blue-Tilt Milky-Way simulations* (2026).
-> [10.5281/zenodo.20805091](https://doi.org/10.5281/zenodo.20805091)
+```bibtex
+@software{wu_2026_20805091,
+  author    = {Wu, Jianhao and Chan, Tsang Keung and Forouhar Moreno, Victor J.},
+  title     = {btmw: Analysis code for Blue-Tilt Milky-Way simulations},
+  month     = jun,
+  year      = 2026,
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.20805091},
+  url       = {https://doi.org/10.5281/zenodo.20805091},
+}
+```
 
 **Raw simulation data:**
 
-> J. Wu, T. K. Chan, V. J. Forouhar Moreno,
-> *btmw: Raw data for Blue-Tilt Milky-Way simulations* (2026).
-> [10.5281/zenodo.20805009](https://doi.org/10.5281/zenodo.20805009)
+```bibtex
+@dataset{wu_2026_20805009,
+  author    = {Wu, Jianhao and Chan, Tsang Keung and Forouhar Moreno, Victor J.},
+  title     = {btmw: Raw data for Blue-Tilt Milky-Way simulations},
+  month     = jun,
+  year      = 2026,
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.20805009},
+  url       = {https://doi.org/10.5281/zenodo.20805009},
+}
+```
 
 ---
 
