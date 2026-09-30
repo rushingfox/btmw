@@ -68,7 +68,6 @@ class SimulationsConfig:
     path_templates: dict[str, str]
     simulations: dict[str, Simulation]
     particle_mass_in_swift_unit: dict[str, float | None]
-    defaults: dict[str, Any]
 
     def __getitem__(self, label: str) -> Simulation:
         return self.simulations[label]
@@ -122,7 +121,6 @@ def load_simulations() -> SimulationsConfig:
         path_templates=templates,
         simulations=sims,
         particle_mass_in_swift_unit=raw.get("particle_mass_in_swift_unit", {}),
-        defaults=raw.get("defaults", {}),
     )
 
 

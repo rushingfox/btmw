@@ -5,14 +5,12 @@ fields plus a simple "main halo = argmax of BoundSubhalo/TotalMass"
 identification. ``read_soap_bundle`` returns that bundle as a plain
 dataclass so the figure code never touches h5py directly.
 
-Conventions (verified against the original HMF/HVF source notebooks in the
-paper-figure archive):
+Units (SOAP native, h-free):
 
-- SOAP stores TotalMass in units of 1e10 Msun.
-- SOAP stores SORadius in Mpc (SWIFT internal length unit, h-free).
-- SOAP stores MaximumCircularVelocityUnsoftened in km/s
-  (the source notebook then multiplies by 1e5 to convert to cm/s).
-- HaloCentre is in Mpc.
+- TotalMass in 1e10 Msun.
+- SORadius in Mpc (SWIFT internal length unit).
+- MaximumCircularVelocityUnsoftened in km/s.
+- HaloCentre in Mpc.
 """
 
 from __future__ import annotations
@@ -25,7 +23,7 @@ import numpy as np
 
 
 # ---------------------------------------------------------------------------
-# SOAP path constants (kept for figures that only need a single field).
+# SOAP dataset paths
 # ---------------------------------------------------------------------------
 SOAP_BOUND_TOTAL_MASS     = "/BoundSubhalo/TotalMass"
 SOAP_BOUND_NPART_DM       = "/BoundSubhalo/NumberOfDarkMatterParticles"
@@ -34,9 +32,6 @@ SOAP_SO200C_TOTAL_MASS    = "/SO/200_crit/TotalMass"
 SOAP_SO200C_RADIUS        = "/SO/200_crit/SORadius"
 SOAP_SO100C_RADIUS        = "/SO/100_crit/SORadius"
 SOAP_SO50C_RADIUS         = "/SO/50_crit/SORadius"
-SOAP_SO200M_TOTAL_MASS    = "/SO/200_mean/TotalMass"
-SOAP_SO200M_RADIUS        = "/SO/200_mean/SORadius"
-SOAP_SO200M_CONCENTRATION = "/SO/200_mean/Concentration"
 SOAP_HALO_CENTRE          = "/InputHalos/HaloCentre"
 
 

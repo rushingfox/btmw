@@ -41,7 +41,7 @@ simulations:
     model: PL                # power-law / "vanilla" CDM
     resolution: fiducial
     snapshot_num: 50
-    has_vr: true             # used by figs 11, 12, 13, 14
+    has_vr: true             # VR used by figs 11-14 (m12i) and figs 5, 14 (m12f)
 
   m12i_btps_deep:
     host: m12i
@@ -106,21 +106,15 @@ simulations:
     has_vr: false
 
 # ---------------------------------------------------------------------------
-# Per-host particle masses (DM, SWIFT internal units of 1e10 Msun, h-free).
-# Used by the unresolved-region shading (min_npart=20) on figs 6/7/15/16.
-# Values come from the original Type-1 ipynbs in
-# paper_figures_min_20_HBTplus_v1_archive/.
+# DM particle masses per resolution (SWIFT internal units of 1e10 Msun,
+# h-free). Used by the unresolved-region shading (20 particles) and by the
+# HBT-based radial density profile (density and convergence radius).
 # ---------------------------------------------------------------------------
 
 particle_mass_in_swift_unit:
   # fiducial resolution (zoom HRS): 4.2248334e-06 * 1e10 Msun = 4.2248334e4 Msun
   fiducial: 4.2248334e-06
   # high resolution: 8x more particles -> 1/8 mass each
-  # Verified from MUSIC IC log (m12i_btps_deep_highest/IC/jobout_1596459):
+  # From the MUSIC initial conditions:
   #   particle mass = 3707.29 h-1 Msun = 3707.29/0.702/1e10 = 5.2810e-07 (h-free 1e10 Msun)
   high: 5.2810417e-07
-
-# Selection thresholds reused across figures.
-defaults:
-  min_npart: 20            # halo-finder lower limit reflected by *_min_20 paths
-  r50c_over_r200c: 1.66    # COCO empirical relation, used by HMF / CMF / HRF

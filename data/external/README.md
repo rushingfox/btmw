@@ -5,9 +5,6 @@ Each file is a two-column whitespace-separated text table (columns documented
 below and in each file's header comment). These files are **not** produced by
 `btmw` and should not be modified.
 
-All files were copied from the original paper-plot directory tree on the CUHK
-Central Cluster.
-
 ## Active files
 
 | File | Columns | Used by | Reference |
@@ -18,15 +15,10 @@ Central Cluster.
 | `lovell2014_cmf_r200c.txt` | `r [kpc]`, `M_sub(<r)/M_tot(<r)` | `btmw cmf` | [Lovell+ 2014](https://doi.org/10.1093/mnras/stt2431) — cumulative substructure mass fraction (R200c ≈ 256.1 kpc) |
 | `grand2021_rmax_r200c.txt` | `Vmax [km/s]`, `Rmax [kpc]` | `btmw rvsv`, `btmw rvsv --resolution-study` | [Grand & White 2021](https://doi.org/10.1093/mnras/staa3993) — Subhalos within R200c (referred to as "Robert result" in figure legends) |
 
-## Files parked in `trash/`
-
-The `trash/` subdirectory contains digitized COCO M-Vmax and R-Vmax curves that
-are **not loaded by the current Python code path**. They are kept temporarily so
-a full figure-reproduction run can confirm they are safe to delete permanently.
-
-Note: the black M-Vmax reference line in `btmw mvsv` is an **analytic**
-BolshoiP+MDPL power-law hard-coded in `src/btmw/figures/mvsv.py`; it is not
-read from `data/external/`.
+Note: the black M-Vmax reference line in `btmw mvsv` is the **analytic**
+BolshoiP+MDPL relation of Rodríguez-Puebla+ 2016
+(doi:10.1093/mnras/stw1705), hard-coded in `src/btmw/figures/mvsv.py`; it is
+not read from `data/external/`.
 
 If you discover a discrepancy between any active file and the original
 publication, please open an issue.
