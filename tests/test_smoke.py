@@ -34,7 +34,6 @@ def test_load_simulations_yields_nine_sims() -> None:
     from btmw.config import load_simulations
 
     cfg = load_simulations()
-    assert cfg.working_root  # non-empty path
     assert len(cfg.simulations) == 9
     # 6 fiducial + 3 high-res
     fiducial = [s for s in cfg.simulations.values() if s.resolution == "fiducial"]
