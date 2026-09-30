@@ -1,12 +1,8 @@
 """Shared helpers for the HMF / HVF (and similar two-panel) figures.
 
-These functions are factored out of the source notebooks
-``HMF/HMF_hbtplus_comparison_with_fitting.ipynb`` and
-``HVF_r100/HVF_hbtplus_m12i_m12f_comparison_fitting.ipynb`` so the
-per-figure modules stay short.  All algorithmic choices (bin edges,
-fitting form, ratio interpolation) intentionally mirror the notebooks
-verbatim — modify with care if you want to keep byte-level
-reproducibility.
+Bin edges, the fitting form and the ratio interpolation determine the
+published figures and the checked-in caches; changing them changes the
+output.
 """
 
 from __future__ import annotations
@@ -21,12 +17,11 @@ from scipy.interpolate import interp1d
 # ---------------------------------------------------------------------------
 
 def cumulative_above_log10(values: np.ndarray, log10_edges: np.ndarray) -> np.ndarray:
-    """Return ``(10**LHS_edges, N(>LHS_edge))`` exactly like the source notebooks.
+    """Return ``(10**LHS_edges, N(>=LHS_edge))``.
 
-    The notebooks histogram ``log10(values)`` on ``log10_edges``, build
-    ``N(>=RHS_of_bin) = total - cumsum`` and then add the bin's own count
-    back to convert to ``N(>=LHS_of_bin)``.  We replicate that arithmetic
-    so the cached files are bit-identical to the original ones.
+    Histograms ``log10(values)`` on ``log10_edges``, builds
+    ``N(>=RHS_of_bin) = total - cumsum`` and then adds the bin's own count
+    back to convert to ``N(>=LHS_of_bin)``.
     """
     countdata, bins = np.histogram(np.log10(values), bins=log10_edges)
     LHS_bins = bins[:-1]
@@ -37,7 +32,7 @@ def cumulative_above_log10(values: np.ndarray, log10_edges: np.ndarray) -> np.nd
 
 
 # ---------------------------------------------------------------------------
-# Ratio / interpolation helpers (verbatim from the source notebooks)
+# Ratio / interpolation helpers
 # ---------------------------------------------------------------------------
 
 def interp_data(data: np.ndarray, x_new: np.ndarray) -> np.ndarray:
@@ -48,12 +43,9 @@ def interp_data(data: np.ndarray, x_new: np.ndarray) -> np.ndarray:
 
 
 def calculate_ratio(base_data: np.ndarray, data: np.ndarray) -> np.ndarray:
-    """Notebook-style ratio: keep the source's spelling for traceability."""
+    """Ratio ``data / base_data`` on the bins where both are non-zero."""
     if not np.allclose(base_data[:, 0], data[:, 0]):
-        print(
-            "Error: you could not use this script because of the binning "
-            "scheme is not equal in two arrays!"
-        )
+        raise ValueError("calculate_ratio: the two arrays use different binning.")
     nz_base = np.where(base_data[:, 1] != 0)[0]
     nz_data = np.where(data[:, 1] != 0)[0]
     common = np.intersect1d(nz_base, nz_data)
@@ -84,7 +76,7 @@ def fitting_plot(
     *,
     linestyle: str = "-.",
 ) -> None:
-    """Overlay the analytic BT fit on both panels (mirror of source func)."""
+    """Overlay the analytic BT fit on both panels."""
     color_style = f"C{int(model_index)}{linestyle}"
     fitting_ratio = np.column_stack(
         (PL_data[:, 0], blue_fitting(PL_data[:, 0], center_mu, max_enhancement))

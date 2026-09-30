@@ -17,6 +17,13 @@ from . import __version__
 # Subcommand handlers
 # ---------------------------------------------------------------------------
 
+def _check_single_output(args: argparse.Namespace, n_figures: int, hint: str) -> None:
+    """Reject ``--output`` when the command would write more than one figure."""
+    if args.output is not None and n_figures > 1:
+        raise SystemExit(
+            f"btmw: error: --output can only be used when one figure is produced ({hint})."
+        )
+
 def _cmd_projection_map(args: argparse.Namespace) -> int:
     from .figures import projection_map
     out = projection_map.plot(
@@ -31,8 +38,7 @@ def _cmd_projection_map(args: argparse.Namespace) -> int:
 
 def _cmd_radial_density(args: argparse.Namespace) -> int:
     from .figures import radial_density
-    # use_tex=None → auto-select from backend (HBT→True, VR→False).
-    # --no-tex forces use_tex=False regardless of backend.
+    # use_tex=None → LaTeX on; --no-tex turns it off.
     use_tex = False if args.no_tex else None
     out = radial_density.plot(
         host=args.host,
@@ -52,7 +58,7 @@ def _cmd_hmf(args: argparse.Namespace) -> int:
         print(f"wrote {out}")
         return 0
     if args.compare_vr:
-        out = hmf.plot_compare_vr(refresh=args.refresh, use_tex=not args.no_tex)
+        out = hmf.plot_compare_vr(refresh=args.refresh, output=args.output, use_tex=not args.no_tex)
         print(f"wrote {out}")
     else:
         out = hmf.plot(refresh=args.refresh, output=args.output, use_tex=not args.no_tex)
@@ -67,7 +73,7 @@ def _cmd_hvf(args: argparse.Namespace) -> int:
         print(f"wrote {out}")
         return 0
     if args.compare_vr:
-        out = hvf.plot_compare_vr(refresh=args.refresh, use_tex=not args.no_tex)
+        out = hvf.plot_compare_vr(refresh=args.refresh, output=args.output, use_tex=not args.no_tex)
         print(f"wrote {out}")
     else:
         out = hvf.plot(refresh=args.refresh, output=args.output, use_tex=not args.no_tex)
@@ -78,11 +84,13 @@ def _cmd_hvf(args: argparse.Namespace) -> int:
 def _cmd_hrf(args: argparse.Namespace) -> int:
     from .figures import hrf
     bins = args.bin if args.bin else list(hrf.MASS_BINS)
+    _check_single_output(args, len(bins), "pass a single --bin")
     if args.resolution_study:
         for mass_bin in bins:
             out = hrf.plot_resolution_study(
                 mass_bin=mass_bin,
                 refresh=args.refresh,
+                output=args.output,
                 use_tex=not args.no_tex,
             )
             print(f"wrote {out}")
@@ -92,6 +100,7 @@ def _cmd_hrf(args: argparse.Namespace) -> int:
             out = hrf.plot_compare_vr(
                 mass_bin=mass_bin,
                 refresh=args.refresh,
+                output=args.output,
                 use_tex=not args.no_tex,
             )
             print(f"wrote {out}")
@@ -121,8 +130,9 @@ def _cmd_rvsv(args: argparse.Namespace) -> int:
         print(f"wrote {out}")
         return 0
     hosts = [args.host] if args.host else ["m12i", "m12f"]
+    _check_single_output(args, len(hosts), "pass --host")
     for host in hosts:
-        out = rvsv.plot(host=host, refresh=args.refresh, use_tex=not args.no_tex)
+        out = rvsv.plot(host=host, refresh=args.refresh, output=args.output, use_tex=not args.no_tex)
         print(f"wrote {out}")
     return 0
 
@@ -130,6 +140,7 @@ def _cmd_rvsv(args: argparse.Namespace) -> int:
 def _cmd_mvsv(args: argparse.Namespace) -> int:
     from .figures import mvsv
     hosts = [args.host] if args.host else ["m12i", "m12f"]
+    _check_single_output(args, len(hosts), "pass --host")
     for host in hosts:
         out = mvsv.plot(
             host=host, refresh=args.refresh, output=args.output,
@@ -222,9 +233,9 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["hbt", "vr"],
         default=None,
         help=(
-            "Which data source to use: 'hbt' (HBT particle-based, v1 original) or "
-            "'vr' (VelocIRaptor profile-based, PRD version). "
-            "Default: 'hbt' for m12i, 'vr' for m12f (paper default)."
+            "Which main-halo centre to use: 'hbt' (HBT-HERONS most-bound particle) "
+            "or 'vr' (VELOCIraptor centre). "
+            "Default: 'hbt' for m12i, 'vr' for m12f (as in the paper)."
         ),
     )
     _add_common_options(p)
@@ -232,7 +243,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     # ----- fig 6 / 11 / 15 -----
     p = sub.add_parser("hmf", help="Fig 6 (HMF), Fig 11 (HMF VR-SOAP), Fig 15 (HMF resolution).")
-    p.add_argument("--compare-vr", action="store_true", help="Fig 11 (PRD version).")
+    p.add_argument("--compare-vr", action="store_true", help="Fig 11.")
     p.add_argument("--resolution-study", action="store_true", help="Fig 15.")
     _add_common_options(p)
     p.set_defaults(func=_cmd_hmf)
