@@ -38,6 +38,7 @@ FILES=(
     "m12i_cdmo_fof/hbtplus_min_20/050/SubSnap_050.*.hdf5"
     "m12i_cdmo_fof/soap_VR_Aquarius_01_without_LRS/SOAP_uncompressed/halo_properties_0050.hdf5"
     "m12i_cdmo/velociraptor_0050_Aquarius_01_without_LRS/output.properties"
+    "m12i_cdmo/velociraptor_0050_Aquarius_01_without_LRS/output.profiles"
     "m12i_cdmo/m12i_cdmo_0050.hdf5"
 
     # --- m12i_btps_deep (fiducial, snap 0050, has VR) ---
@@ -45,6 +46,7 @@ FILES=(
     "m12i_btps_deep_fof/hbtplus_min_20/050/SubSnap_050.*.hdf5"
     "m12i_btps_deep_fof/soap_VR_Aquarius_01_without_LRS/SOAP_uncompressed/halo_properties_0050.hdf5"
     "m12i_btps_deep/velociraptor_0050_Aquarius_01_without_LRS/output.properties"
+    "m12i_btps_deep/velociraptor_0050_Aquarius_01_without_LRS/output.profiles"
     "m12i_btps_deep/m12i_btps_deep_0050.hdf5"
 
     # --- m12i_btps_soft (fiducial, snap 0050, has VR) ---
@@ -52,32 +54,39 @@ FILES=(
     "m12i_btps_soft_fof/hbtplus_min_20/050/SubSnap_050.*.hdf5"
     "m12i_btps_soft_fof/soap_VR_Aquarius_01_without_LRS/SOAP_uncompressed/halo_properties_0050.hdf5"
     "m12i_btps_soft/velociraptor_0050_Aquarius_01_without_LRS/output.properties"
+    "m12i_btps_soft/velociraptor_0050_Aquarius_01_without_LRS/output.profiles"
     "m12i_btps_soft/m12i_btps_soft_0050.hdf5"
 
-    # --- m12f_cdmo (fiducial, snap 0049, no VR) ---
+    # --- m12f_cdmo (fiducial, snap 0049, has VR) ---
     "m12f_cdmo_fof/soap_min_20/SOAP_uncompressed/halo_properties_0049.hdf5"
     "m12f_cdmo_fof/hbtplus_min_20/049/SubSnap_049.*.hdf5"
+    "m12f_cdmo/velociraptor_0049_Aquarius_01_without_LRS/output.properties"
+    "m12f_cdmo/velociraptor_0049_Aquarius_01_without_LRS/output.profiles"
     "m12f_cdmo/m12f_cdmo_0049.hdf5"
 
-    # --- m12f_btps_deep (fiducial, snap 0049, no VR) ---
+    # --- m12f_btps_deep (fiducial, snap 0049, has VR) ---
     "m12f_btps_deep_fof/soap_min_20/SOAP_uncompressed/halo_properties_0049.hdf5"
     "m12f_btps_deep_fof/hbtplus_min_20/049/SubSnap_049.*.hdf5"
+    "m12f_btps_deep/velociraptor_0049_Aquarius_01_without_LRS/output.properties"
+    "m12f_btps_deep/velociraptor_0049_Aquarius_01_without_LRS/output.profiles"
     "m12f_btps_deep/m12f_btps_deep_0049.hdf5"
 
-    # --- m12f_btps_soft (fiducial, snap 0049, no VR) ---
+    # --- m12f_btps_soft (fiducial, snap 0049, has VR) ---
     "m12f_btps_soft_fof/soap_min_20/SOAP_uncompressed/halo_properties_0049.hdf5"
     "m12f_btps_soft_fof/hbtplus_min_20/049/SubSnap_049.*.hdf5"
+    "m12f_btps_soft/velociraptor_0049_Aquarius_01_without_LRS/output.properties"
+    "m12f_btps_soft/velociraptor_0049_Aquarius_01_without_LRS/output.profiles"
     "m12f_btps_soft/m12f_btps_soft_0049.hdf5"
 
-    # --- m12i_cdmo_highest (high-res, snap 0050, no VR) ---
+    # --- m12i_cdmo_highest (high-res, snap 0050; VR not used) ---
     "m12i_cdmo_highest_fof/soap_min_20/SOAP_uncompressed/halo_properties_0050.hdf5"
     "m12i_cdmo_highest_fof/hbtplus_min_20/050/SubSnap_050.*.hdf5"
 
-    # --- m12i_btps_deep_highest (high-res, snap 0050, no VR) ---
+    # --- m12i_btps_deep_highest (high-res, snap 0050; VR not used) ---
     "m12i_btps_deep_highest_fof/soap_min_20/SOAP_uncompressed/halo_properties_0050.hdf5"
     "m12i_btps_deep_highest_fof/hbtplus_min_20/050/SubSnap_050.*.hdf5"
 
-    # --- m12i_btps_soft_highest (high-res, snap 0050, no VR) ---
+    # --- m12i_btps_soft_highest (high-res, snap 0050; VR not used) ---
     "m12i_btps_soft_highest_fof/soap_min_20/SOAP_uncompressed/halo_properties_0050.hdf5"
     "m12i_btps_soft_highest_fof/hbtplus_min_20/050/SubSnap_050.*.hdf5"
 )
