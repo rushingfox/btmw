@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "btmw"
-version = "0.1.0"
+version = "1.0.2"
 description = "Analysis code for Blue-Tilt Milky-Way simulations (arXiv:2412.16072)."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,7 +27,7 @@ keywords = [
     "SOAP",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
@@ -59,9 +59,3 @@ btmw = "btmw.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.pytest.ini_options]
-markers = [
-    "slow: regression tests requiring raw simulation/archive data or long I/O",
-]
-
