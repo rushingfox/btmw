@@ -1,6 +1,6 @@
 #!/bin/bash
 # Render Figure 5 (main-halo radial density profile) for both hosts.
-# m12i uses HBT-HERONS center; m12f uses VR center (PRD version).
+# m12i uses the HBT-HERONS centre; m12f uses the VELOCIraptor centre (as in the paper).
 # Default cache-only plotting does not require BTMW_SIM_ROOT. Set it only with
 # BTMW_REFRESH=1 or otherwise when reading raw simulation files.
 # Submit from the repository root.
@@ -22,7 +22,7 @@ REPO_ROOT="${SLURM_SUBMIT_DIR:-$(pwd)}"
 cd "${REPO_ROOT}"
 
 if [[ ! -f pyproject.toml || ! -d src/btmw ]]; then
-	echo "ERROR: submit this job from the BlueTilt-MWSubhalos repository root." >&2
+	echo "ERROR: submit this job from the btmw repository root." >&2
 	echo "Current directory: ${REPO_ROOT}" >&2
 	exit 2
 fi

@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 def repo_root() -> Path:
-    """Return the absolute path to the BlueTilt-MWSubhalos repo root."""
+    """Return the absolute path to the btmw repo root."""
     here = Path(__file__).resolve()
     for parent in [here, *here.parents]:
         if (parent / "pyproject.toml").is_file():

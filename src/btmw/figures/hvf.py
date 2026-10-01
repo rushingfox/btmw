@@ -1,11 +1,6 @@
 """Fig 7 — Halo Velocity Function (HVF) for HBT-HERONS subhalos.
 Fig 12 — HBT-HERONS vs VELOCIraptor-SOAP HVF comparison.
-
-Source notebooks:
-  HVF_r100/HVF_hbtplus.ipynb                                    (Type 1 — extract HBT)
-  HVF_r100/HVF_hbtplus_m12i_m12f_comparison_fitting.ipynb       (Type 2 — plot fig 7)
-  comparison_with_VR-SOAP/HVF/HVF_VR-SOAP.ipynb                 (Type 1 — extract VR-SOAP)
-  comparison_with_VR-SOAP/HVF/HVF_comparison_HBTplus_vs_VR.ipynb (Type 2 — plot fig 12)
+Fig 16 — HVF resolution study.
 """
 
 from __future__ import annotations
@@ -47,10 +42,8 @@ LABELS_TEX = (
     r"$\rm{m12f:BT\_soft}$",
 )
 
-# Hardcoded unresolved-region bounds (Vmax/V200c) from the source plot
-# notebook ``HVF_hbtplus_m12i_m12f_comparison_fitting.ipynb`` (cell 6).
-# These are the 0th-percentile of the 100-DM-particle subhalo Vmax in
-# the m12i and m12f PL runs, computed inside that notebook.
+# Unresolved-region bounds (Vmax/V200c): the minimum Vmax of subhalos with
+# 100 DM particles in the m12i and m12f PL runs.
 UNRESOLVED_BOUND = {
     "m12i": 0.02995634129285346,
     "m12f": 0.0247377586709585,
@@ -196,7 +189,7 @@ def plot(*, refresh: bool = False, output: str | None = None, use_tex: bool = Tr
 # Fig 12 — HBT-HERONS vs VR-SOAP HVF comparison (m12i only)
 # ---------------------------------------------------------------------------
 
-# m12i sims only (matches archive)
+# m12i sims only (the paper's VR comparison uses m12i)
 _VR_LABELS = ("m12i_cdmo", "m12i_btps_deep", "m12i_btps_soft")
 _VR_LINESTYLES_HBT = ("C1",  "C2",  "C3")
 _VR_LINESTYLES_VR  = ("C1:", "C2:", "C3:")
@@ -211,7 +204,7 @@ _VR_LABELS_TEX_VR = (
     r"$\rm{m12i:BT\_soft \sim VR}$",
 )
 
-# Hardcoded from comparison notebook cell 6 (identical to HVF UNRESOLVED_BOUND m12i)
+# Unresolved-region bounds for Fig 12 (HBT value = UNRESOLVED_BOUND["m12i"])
 _UNRESOLVED_HBT = 0.02995634129285346
 _UNRESOLVED_VR  = 0.03009951542632502
 
@@ -350,7 +343,7 @@ _RES_HIGH_TEX = (
 _RES_RATIO_TEX = (r"$\rm{PL}$", r"$\rm{BT\_deep}$", r"$\rm{BT\_soft}$")
 # Fiducial unresolved bound: same as UNRESOLVED_BOUND["m12i"]
 _RES_UNRES_FID  = 0.02995634129285346
-# High-res unresolved bound (from resolution_study notebook)
+# High-res unresolved bound (Vmax/V200c)
 _RES_UNRES_HIGH = 0.01551527244439509
 
 

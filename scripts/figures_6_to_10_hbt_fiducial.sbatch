@@ -23,7 +23,7 @@ REPO_ROOT="${SLURM_SUBMIT_DIR:-$(pwd)}"
 cd "${REPO_ROOT}"
 
 if [[ ! -f pyproject.toml || ! -d src/btmw ]]; then
-	echo "ERROR: submit this job from the BlueTilt-MWSubhalos repository root." >&2
+	echo "ERROR: submit this job from the btmw repository root." >&2
 	echo "Current directory: ${REPO_ROOT}" >&2
 	exit 2
 fi

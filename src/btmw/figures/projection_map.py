@@ -1,9 +1,7 @@
 """Fig 4 — DM projection map (200 kpc half-width) for the m12i runs.
 
-Mirror of ``paper_figures_min_20_HBTplus_v1_archive/Projection_Map/
-Projection_map0723.ipynb``.  One PNG per simulation; the published
-figure stitches three panels (m12i:PL / BT_deep / BT_soft) together
-externally.
+One PNG per simulation; the published figure places the three panels
+(m12i:PL / BT_deep / BT_soft) side by side.
 """
 
 from __future__ import annotations
@@ -46,8 +44,7 @@ def plot(
         Half-width of the imaged region (kpc).  The published figure uses
         200 kpc, i.e. a 400×400 kpc patch centered on the main halo.
     image_resolution
-        ``project_pixel_grid`` resolution (pixels on a side).  600 in the
-        source notebook.
+        ``project_pixel_grid`` resolution (pixels on a side).
     output
         Optional explicit output path; otherwise writes
         ``figures/<sim_label>_projection_map_<width_kpc:.0f>kpc.png``.
@@ -66,11 +63,11 @@ def plot(
     cfg = load_simulations()
     sim = cfg[sim_label]
 
-    # --- main halo center from SOAP (matches source notebook cell 2) ---
+    # --- main halo centre from SOAP ---
     bundle = read_soap_bundle(sim.soap_hbt_path(), need_vmax=False)
     cx, cy, _cz = bundle.host_centre
 
-    # --- SWIFT snapshot + DM smoothing lengths (source cell 1) ---
+    # --- SWIFT snapshot + DM smoothing lengths ---
     data = load(str(sim.snapshot_path()))
     data.dark_matter.smoothing_length = generate_smoothing_lengths(
         data.dark_matter.coordinates,
@@ -81,7 +78,7 @@ def plot(
         dimension=3,
     )
 
-    # --- region: half-width in Mpc (source uses r_around = 0.2 Mpc = 200 kpc) ---
+    # --- region: half-width in Mpc ---
     r_around_Mpc = width_kpc / 1000.0
     coords = data.dark_matter.coordinates
     region = cosmo_array(
@@ -101,10 +98,9 @@ def plot(
     )
 
     dm_mass_arr = np.asarray(getattr(dm_mass, "value", dm_mass))
-    # The source notebook used the old swiftsimio API which returned surface
-    # density in raw mass units (10^10 Msun / Mpc^2).  In modern swiftsimio
-    # (>=12) the output is normalised to Msun / Mpc^2; rescale so the
-    # vmin=1 / vmax=4 colour range from the source notebook still applies.
+    # swiftsimio (>=12) returns the projected mass in Msun / Mpc^2; convert to
+    # 1e10 Msun / Mpc^2, the unit for which the published colour range
+    # (vmin=1 / vmax=4 in log10) was chosen.
     dm_mass_arr = dm_mass_arr / 1e10
 
     fig, ax = plt.subplots()

@@ -1,11 +1,6 @@
 """Fig 6 — Halo Mass Function (HMF) for HBT-HERONS subhalos.
 Fig 11 — HBT-HERONS vs VELOCIraptor-SOAP HMF comparison.
-
-Source notebooks:
-  HMF/HMF_hbtplus.ipynb                                   (Type 1 — extract HBT)
-  HMF/HMF_hbtplus_comparison_with_fitting.ipynb           (Type 2 — plot fig 6)
-  comparison_with_VR-SOAP/HMF/HMF_VR-SOAP.ipynb           (Type 1 — extract VR-SOAP)
-  comparison_with_VR-SOAP/HMF/HMF_hbtplus_vs_VR_comparison.ipynb  (Type 2 — plot fig 11)
+Fig 15 — HMF resolution study.
 """
 
 from __future__ import annotations
@@ -66,7 +61,7 @@ def extract(sim_label: str, *, refresh: bool = False) -> Path:
 
     bundle = read_soap_bundle(sim.soap_hbt_path(), need_vmax=False)
     host_M200c = bundle.host_m200c           # in 1e10 Msun (SOAP native)
-    host_R200c = float(bundle.r200c.max())   # source notebook uses .max()
+    host_R200c = float(bundle.r200c.max())   # largest R200c = main halo
     distances = subhalo_distances_to_main(bundle)
 
     # μ = M_sub / M_host, excluding the main halo, within 1.66 R200c (~ R50c)
@@ -117,7 +112,7 @@ def plot(*, refresh: bool = False, output: str | None = None, use_tex: bool = Tr
         d_nz = d[d[:, 1] != 0]
         ax0.plot(d_nz[:, 0], d_nz[:, 1], ls, label=tex)
 
-    # COCO black dashed (fit, in log10 space)
+    # COCO fit (Hellwing+16), grey solid line; table is in log10 space
     coco = np.genfromtxt(external_dir() / "hellwing2016_smf_r50c.txt")
     ax0.plot(10 ** coco[:, 0], 10 ** coco[:, 1], "grey",
              label=r"$\rm{COCO\ fit\ for\ }R_{50c}$")
@@ -181,7 +176,7 @@ def plot(*, refresh: bool = False, output: str | None = None, use_tex: bool = Tr
 # Fig 11 — HBT-HERONS vs VR-SOAP HMF comparison (m12i only)
 # ---------------------------------------------------------------------------
 
-# m12i sims only (no m12f VR comparison in archive)
+# m12i sims only (the paper's VR comparison uses m12i)
 _VR_LABELS = ("m12i_cdmo", "m12i_btps_deep", "m12i_btps_soft")
 _VR_LINESTYLES_HBT = ("C1",  "C2",  "C3")
 _VR_LINESTYLES_VR  = ("C1:", "C2:", "C3:")
@@ -290,7 +285,7 @@ def plot_compare_vr(
         d_nz = d[d[:, 1] != 0]
         ax0.plot(d_nz[:, 0], d_nz[:, 1], _VR_LINESTYLES_VR[i], label=tex)
 
-    # COCO black reference
+    # COCO fit (Hellwing+16), grey solid line
     coco = np.genfromtxt(external_dir() / "hellwing2016_smf_r50c.txt")
     ax0.plot(10 ** coco[:, 0], 10 ** coco[:, 1], "grey",
              label=r"$\rm{COCO\ fit\ for\ }R_{50c}$")

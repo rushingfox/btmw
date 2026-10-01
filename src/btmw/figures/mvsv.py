@@ -1,23 +1,17 @@
 """Fig 14: M_vir vs V_max relation (MvsV).
 
-Source notebooks:
-  paper_figures_min_20_HBTplus_v1_archive/comparison_with_VR-SOAP/MvsV/
-    MvsV.ipynb                         (Type 1 – extract VR from old catalog)
-    MvsV_m12i.ipynb                    (Type 2 – plot VR m12i)
-    MvsV_m12f.ipynb                    (Type 2 – plot VR m12f)
-
-Algorithm (VR, Type 1):
-    * Open the old VELOCIraptor ``output.properties`` catalog.
+Extraction:
+    * Open the raw VELOCIraptor ``output.properties`` catalogue.
     * Use ``Vmax`` and ``Mass_BN98`` fields, excluding the main halo.
     * Fixed log-V bins: 10^arange(floor(log10(Vmin)), ceil(log10(Vmax))+0.05, 0.05).
     * For each bin: 16th / 50th / 84th percentile of M_converted (NaN if empty).
     * Output: ``{label}_VvsM_Msub_{Lower,Median,Upper}``.
 
-Plot (Type 2):
+Plot:
   * Two-panel figure (height_ratios=[7, 3]), figsize=(6, 8), for m12i or m12f.
   * Main panel: 3 sim Median lines + fill_between(Lower/h, Upper/h).
-    * Reference: analytic BolshoiP+MDPL/Rockstar power-law (black), hard-coded
-        below rather than loaded from data/external/.
+    * Reference: Rodriguez-Puebla et al. (2016) BolshoiP+MDPL M_vir-V_max
+        relation (black), hard-coded below rather than loaded from data/external/.
     * Unresolved axvspan from x1=0.5 to x2 (see _UNRESOLVED_X2_VR).
   * Ratio panel: BT_deep/PL and BT_soft/PL (Median only).
 """
@@ -42,8 +36,9 @@ from ..paths import cache_dir, figures_dir
 
 # h factor used for mass conversion (WMAP7 SWIFT sims)
 _H_FACTOR = 0.702
-# BolshoiP + MDPL h for the analytic reference line (Grand & White 2021 / Robert result)
-# "Rockstar" here refers to the halo finder used in BolshoiP+MDPL, not the data file.
+# h of the BolshoiP + MDPL (Planck) cosmology, used for the Rodriguez-Puebla et al.
+# (2016) reference line. "Rockstar" below refers to the halo finder used in
+# BolshoiP+MDPL.
 _H_BOLSHOI = 0.678
 
 # Velocity bin width in log10 (same as HVF / RvsV)
@@ -57,9 +52,8 @@ _UPPER_PCT  = 84
 # left xlim for all MvsV plots
 _X1 = 5e-1  # 0.5 km/s
 
-# Unresolved region x2 (km/s) for fig 14 (VR-SOAP data)
-# m12i: from comparison_with_VR-SOAP/MvsV/MvsV_m12i.ipynb
-# m12f: from comparison_with_VR-SOAP/MvsV/MvsV_m12f.ipynb
+# Unresolved region x2 (km/s) for fig 14: the VR unresolved bound (Vmax/V200c)
+# times the host V200c [cm/s], converted to km/s.
 _UNRESOLVED_X2_VR = {
     "m12i": 0.03009951542632502 * 14203994.722145732 / 1e5,   # ≈ 4.275
     "m12f": 0.024061509353586898 * 15879541.199106842 / 1e5,  # ≈ 3.820
@@ -88,7 +82,7 @@ _LINE_STYLES = ["C1", "C2", "C3"]
 # ---------------------------------------------------------------------------
 
 def _vr_cache_path(sim_label: str, which: str) -> Path:
-    """Path for old-VR cache: {sim_label}_VvsM_Msub_{which} (matches archive naming)."""
+    """Path for the VR cache file ``{sim_label}_VvsM_Msub_{which}``."""
     return cache_dir() / "mvsv" / f"{sim_label}_VvsM_Msub_{which}"
 
 
@@ -104,7 +98,7 @@ def _bin_mvsv(
     """Bin M-converted values by Vmax and compute 16/50/84 percentiles.
 
     Returns (v_center, M_lower, M_median, M_upper) — same length, NaN for
-    empty bins.  Follows the notebook algorithm verbatim.
+    empty bins.
     """
     lv_min = math.floor(math.log10(vmax_sel.min()))
     lv_max = math.ceil(math.log10(vmax_sel.max()))
@@ -134,19 +128,19 @@ def _bin_mvsv(
 
 
 # ---------------------------------------------------------------------------
-# Extract: VR (old VelocIRaptor catalog — output.properties)
+# Extract: raw VELOCIraptor catalogue (output.properties)
 # ---------------------------------------------------------------------------
 
-# VR bin resolution matches archive notebook (VResoInHVF = 0.05)
+# log10(Vmax) bin width for the VR catalogue
 _VR_V_RESO = 0.05
 
 
 def extract_vr(sim_label: str, *, refresh: bool = False) -> dict[str, Path]:
-    """Compute MvsV percentile bands from old VelocIRaptor catalog.
+    """Compute MvsV percentile bands from the raw VELOCIraptor catalogue.
 
     Reads ``vr_raw_dir/output.properties`` (the VELOCIraptor HDF5 output),
     using ``Vmax`` [km/s] and ``Mass_BN98`` [1e10 Msun] fields, with
-    bin resolution 0.05 in log10(V).  Exactly mirrors ``MvsV.ipynb``.
+    bin resolution 0.05 in log10(V).
     """
     paths = {w: _vr_cache_path(sim_label, w) for w in ("Lower", "Median", "Upper")}
     if all(p.is_file() for p in paths.values()) and not refresh:
@@ -167,8 +161,7 @@ def extract_vr(sim_label: str, *, refresh: bool = False) -> dict[str, Path]:
         h_raw     = f["SimulationInfo"].attrs["h_val"]
         h_factor  = float(h_raw.decode() if isinstance(h_raw, bytes) else h_raw)
 
-    # Notebook: SWIFT_UnitMass = 1e10*Msun, Converted_UnitMass = Msun/h
-    # => m_converted = m * 1e10 * h
+    # SWIFT mass unit is 1e10 Msun; convert to Msun/h: m * 1e10 * h
     m_converted = halo_mass * 1e10 * h_factor  # in h^{-1} Msun
 
     # Exclude main halo (index 0 in VR = halo ID 1)
@@ -194,11 +187,10 @@ def extract_vr(sim_label: str, *, refresh: bool = False) -> dict[str, Path]:
 # ---------------------------------------------------------------------------
 
 def _rockstar_line(v_log10: np.ndarray) -> np.ndarray:
-    """Analytic M_vir-Vmax power law from BolshoiP+MDPL (Grand & White 2021, Robert's result).
+    """Analytic M_vir-V_max relation of Rodriguez-Puebla et al. (2016) from the
+    BolshoiP+MDPL simulations (Rockstar halo finder), returned as log10(M).
 
-    "Rockstar" refers to the halo finder used in BolshoiP+MDPL simulations.
-    This is the black MvsV reference line. It is intentionally analytic and
-    does not read any of the COCO M-Vmax tables under data/external/trash/.
+    This is the black reference line of Fig 14.
     """
     return v_log10 * 3.2282 + 4.7355  # log10(M)
 
@@ -211,7 +203,7 @@ def _interp_data(data: np.ndarray, x_new: np.ndarray) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------
-# Plot: Fig 14 — VR-SOAP data vs Rockstar reference
+# Plot: Fig 14 — VELOCIraptor data vs the BolshoiP+MDPL reference
 # ---------------------------------------------------------------------------
 
 def plot(
@@ -221,12 +213,11 @@ def plot(
     output: str | Path | None = None,
     use_tex: bool = True,
 ) -> Path:
-    """Render Fig 14 MvsV for *host* using SOAP-VR data ('m12i' or 'm12f').
+    """Render Fig 14 (M_vir-V_max) for *host* ('m12i' or 'm12f').
 
-    This reproduces the archive notebook
-    ``comparison_with_VR-SOAP/MvsV/MvsV_{host}.ipynb`` which plots the
-    VR-SOAP M_vir–V_max relation for the three m12i (or m12f) sims
-    versus the BolshoiP+MDPL Rockstar power-law reference.
+    Plots the M_vir-V_max relation of the three runs of *host* from their raw
+    VELOCIraptor catalogues, with the Rodriguez-Puebla et al. (2016)
+    BolshoiP+MDPL relation as reference.
     """
     if host not in _HOST_SIMS:
         raise ValueError(f"host must be 'm12i' or 'm12f', got {host!r}")
@@ -265,7 +256,7 @@ def plot(
         ax0.fill_between(lo[:, 0], lo[:, 1] / _H_FACTOR, up[:, 1] / _H_FACTOR,
                          color=_LINE_STYLES[i], alpha=0.2)
 
-    # Rockstar reference only (no coco fitting in this notebook)
+    # Reference line: Rodriguez-Puebla et al. (2016) BolshoiP+MDPL relation
     ax0.plot(10 ** v_rock, 10 ** _rockstar_line(v_rock) / _H_BOLSHOI, "black",
              label=r"$\rm{BolshoiP\&MDPL\ result}$")
 
@@ -284,8 +275,8 @@ def plot(
     ax0.set_ylabel(r"$M_{\rm vir}\ [{\rm M}_{\odot}]$", fontsize=20)
     ax0.legend(fontsize=12)
 
-    # Ratio panel: BT_deep/PL and BT_soft/PL (direct division, VR data)
-    # Notebook divides arrays directly — interpolate onto cdmo x-grid for safety.
+    # Ratio panel: BT_deep/PL and BT_soft/PL. The BT medians are interpolated
+    # (and extrapolated) onto the PL velocity grid before dividing.
     base = medians[0]
     x_base = base[:, 0]  # all sims share same bin edges from same V range
     deep_interp = _interp_data(medians[1], x_base)
@@ -299,7 +290,6 @@ def plot(
 
     ax1.set_ylabel(r"$M_{\rm BT}/M_{\rm PL}$", fontsize=20)
     ax1.axhline(y=1, color="black", linestyle="-", alpha=0.3)
-    # ax1.legend(fontsize=8)  # commented out in archive notebook
 
     for ax in (ax0, ax1):
         ax.xaxis.set_ticks_position("both")

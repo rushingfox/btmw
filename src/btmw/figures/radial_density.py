@@ -1,29 +1,23 @@
 """Fig 5 — Main-halo radial dark-matter density profile.
 
-Two extraction backends:
-  * ``'hbt'`` (paper v1 / m12i): reads HBT SubSnap + SWIFT snapshot directly.
-    Cache files use the v1 naming: ``{sim}_radial_density_simulation``,
-    ``{sim}_NFW_fitting``, ``{sim}_converg_radius``.
-    * ``'vr'``  (PRD version / m12f): reads VR radial-profile HDF5 files
-    (already binned by VelocIRaptor).
-    Cache files use 250507 naming: ``{sim}_simulation_1``,
-    ``{sim}_NFW_1``, ``{sim}_converg_radius1``.
+Two extraction backends, differing in how the main-halo centre is found:
+  * ``'hbt'`` (default for m12i): most-bound particle from HBT-HERONS; reads
+    the HBT SubSnap + SWIFT snapshot directly and bins the particles.
+    Cache files: ``{sim}_radial_density_simulation``, ``{sim}_NFW_fitting``,
+    ``{sim}_converg_radius``.
+  * ``'vr'`` (default for m12f): VELOCIraptor centre; reads the VR
+    radial-profile HDF5 files (already binned by VELOCIraptor).
+    Cache files: ``{sim}_simulation_1``, ``{sim}_NFW_1``,
+    ``{sim}_converg_radius1``.
+
+The paper uses the VELOCIraptor centre for m12f because the HBT-HERONS centre
+of the m12f main halo is offset from the true centre by up to 2 kpc.
 
 Cache lives under ``data/cache/radial_density/{backend}/``.
 
-The plot function reproduces the two-panel layout of the archive notebooks:
+The figure has two panels:
   * Main panel (log-log): rho vs r/R200m, with NFW fits and convergence shade.
   * Ratio panel (log-log): rho_BT / rho_PL.
-
-Source notebooks (for numeric fidelity):
-  v1 (HBT):
-    working/.../paper_figures_min_20_HBTplus_v1_archive/RadialDensityProfile/
-        comparison_RadialProfile_m12i.ipynb
-    working/.../m12i_cdmo_fof/hbtplus_min_20/Radial_density_profile_hbtplus.ipynb
-  250507 (VR):
-    working/.../paper_figures_min_20_HBTplus_version_250507/RadialDensityProfile_VR/
-        haloradialprofile_colossus0920.ipynb
-        comparison_RadialProfile_m12i.ipynb
 """
 
 from __future__ import annotations
@@ -50,9 +44,9 @@ from ..paths import cache_dir, figures_dir
 
 Backend = Literal["hbt", "vr"]
 
-# Default backend per host, matching the paper:
-#   m12i: HBT particle-based (v1 archive; original centre)
-#   m12f: VelocIRaptor profile-based (PRD version; better visual centre)
+# Default backend per host, as in the paper:
+#   m12i: HBT-HERONS most-bound particle
+#   m12f: VELOCIraptor centre (see module docstring)
 _DEFAULT_BACKEND: dict[str, Backend] = {"m12i": "hbt", "m12f": "vr"}
 
 # Fiducial labels per host, in display order (PL, BT_deep, BT_soft).
@@ -148,14 +142,11 @@ def _rho_crit_cgs(little_h: float = LITTLE_H) -> float:
 
 
 # ---------------------------------------------------------------------------
-# HBT-based extraction (v1 paper, m12i)
+# HBT-based extraction (default for m12i)
 # ---------------------------------------------------------------------------
 
 def extract_hbt(sim_label: str, *, refresh: bool = False) -> None:
     """Compute radial density from HBT particle lists + SWIFT snapshot.
-
-    Reproduces the algorithm in
-    ``m12i_cdmo_fof/hbtplus_min_20/Radial_density_profile_hbtplus.ipynb``.
 
     Requires the SWIFT snapshot (tens of GB) in memory; run on a compute node.
     """
@@ -234,7 +225,7 @@ def extract_hbt(sim_label: str, *, refresh: bool = False) -> None:
     distances_kpc = np.linalg.norm(coords - centre, axis=1) * 1000.0  # Mpc→kpc
 
     # ------------------------------------------------------------------
-    # 5. Histogram (source notebook Cell 7)
+    # 5. Histogram
     # ------------------------------------------------------------------
     bins = np.append(np.array([0.0]), 10.0 ** np.arange(-2.0, 4.1, 0.1))
     countdata, _ = np.histogram(distances_kpc, bins=bins)
@@ -258,14 +249,14 @@ def extract_hbt(sim_label: str, *, refresh: bool = False) -> None:
     density = countdata * particle_mass_msun / volume_bins  # Msun / kpc^3
 
     # ------------------------------------------------------------------
-    # 6. Save simulation profile (filter r < R200, source Cell 8)
+    # 6. Save simulation profile (filter r < R200)
     # ------------------------------------------------------------------
     out_sim = np.stack((centre_bins / R200m_kpc, density), axis=-1)
     out_sim = out_sim[out_sim[:, 0] < 1.0]
     np.savetxt(str(sim_path), out_sim)
 
     # ------------------------------------------------------------------
-    # 7. NFW profile (source Cell 9)
+    # 7. NFW profile
     # ------------------------------------------------------------------
     rho_halo = M200m_Msun / (4.0 / 3.0 * math.pi * R200m_kpc ** 3)
     A_NFW = math.log(1.0 + C200m) - C200m / (1.0 + C200m)
@@ -278,7 +269,7 @@ def extract_hbt(sim_label: str, *, refresh: bool = False) -> None:
     np.savetxt(str(nfw_path), out_nfw)
 
     # ------------------------------------------------------------------
-    # 8. Convergence radius (Power+03, source Cell 10)
+    # 8. Convergence radius (Power+03)
     # ------------------------------------------------------------------
     npart_cumsum = np.cumsum(countdata)
     mass_cumsum = npart_cumsum * particle_mass_msun  # Msun
@@ -315,15 +306,11 @@ def extract_hbt(sim_label: str, *, refresh: bool = False) -> None:
 
 
 # ---------------------------------------------------------------------------
-# VR-based extraction (PRD version, m12f)
+# VR-based extraction (default for m12f)
 # ---------------------------------------------------------------------------
 
 def extract_vr(sim_label: str, *, refresh: bool = False) -> None:
-    """Compute radial density from VelocIRaptor profile + properties files.
-
-    Reproduces the algorithm in
-    ``paper_figures_min_20_HBTplus_version_250507/RadialDensityProfile_VR/
-        haloradialprofile_colossus0920.ipynb``.
+    """Compute radial density from VELOCIraptor profile + properties files.
 
     VR profile files are small (already binned), so this can run on the
     login node.
@@ -349,7 +336,7 @@ def extract_vr(sim_label: str, *, refresh: bool = False) -> None:
     fname_properties = str(vr_dir / vr_base) + ".properties"
 
     # ------------------------------------------------------------------
-    # 1. VR profiles (source Cell 5-6)
+    # 1. VR profiles
     # ------------------------------------------------------------------
     with h5py.File(fname_profiles, "r") as f:
         mass_profile = np.array(f["Mass_profile"])      # shape (N_halos, N_bins), 1e10 Msun
@@ -375,7 +362,7 @@ def extract_vr(sim_label: str, *, refresh: bool = False) -> None:
     density = halo_mass_prof / volume_bins * 10.0   # Msun / kpc^3
 
     # ------------------------------------------------------------------
-    # 2. VR properties (source Cell 8-9)
+    # 2. VR properties
     # ------------------------------------------------------------------
     with h5py.File(fname_properties, "r") as f:
         R200m = float(np.array(f["R_200mean"])[halo_index])   # Mpc
@@ -385,14 +372,14 @@ def extract_vr(sim_label: str, *, refresh: bool = False) -> None:
     M200m_Msun = M200m_10 * 1e10
 
     # ------------------------------------------------------------------
-    # 3. Save simulation profile (filter r < R200, source Cell 11)
+    # 3. Save simulation profile (filter r < R200)
     # ------------------------------------------------------------------
     out_sim = np.stack((bin_centre / R200m, density), axis=-1)
     out_sim = out_sim[out_sim[:, 0] < 1.0]
     np.savetxt(str(sim_path), out_sim)
 
     # ------------------------------------------------------------------
-    # 4. NFW (source Cell 11, Mpc units then *1e-9 → Msun/kpc^3)
+    # 4. NFW (Mpc units then *1e-9 → Msun/kpc^3)
     # ------------------------------------------------------------------
     rho_halo_mpc = M200m_Msun / (4.0 / 3.0 * math.pi * R200m ** 3)  # Msun/Mpc^3
     A_NFW = math.log(1.0 + C200m) - C200m / (1.0 + C200m)
@@ -406,7 +393,7 @@ def extract_vr(sim_label: str, *, refresh: bool = False) -> None:
     np.savetxt(str(nfw_path), out_nfw)
 
     # ------------------------------------------------------------------
-    # 5. Convergence radius (Power+03, source Cell 10)
+    # 5. Convergence radius (Power+03)
     # ------------------------------------------------------------------
     halo_npart_cumsum = np.cumsum(halo_npart_prof)
     halo_mass_cumsum = np.cumsum(halo_mass_prof)   # 1e10 Msun
@@ -500,18 +487,16 @@ def plot(
         Which host galaxy to plot.
     backend : {'hbt', 'vr'} or None
         Which cache files to read.  ``None`` (default) uses the paper default:
-        ``'hbt'`` for m12i (v1 HBT particle-based centre) and ``'vr'`` for m12f
-        (250507 VelocIRaptor-based centre).  Pass an explicit value to override.
+        ``'hbt'`` for m12i (HBT-HERONS most-bound particle) and ``'vr'`` for
+        m12f (VELOCIraptor centre).  Pass an explicit value to override.
     refresh : bool
         Re-extract cache before plotting.
     output : path-like, optional
         Output file path.  Defaults to
         ``figures/Radial_density_profile_{host}.png``.
     use_tex : bool or None
-        Enable LaTeX rendering.  ``None`` (default) auto-selects ``True``
-        for both backends, mirroring both reference notebooks which call
-        ``rc('text', usetex=True)`` and ``rc('font', sans-serif=['Helvetica'])``.
-        Pass ``False`` (or use ``--no-tex`` CLI flag) to disable.
+        Enable LaTeX rendering.  ``None`` (default) means ``True`` for both
+        backends.  Pass ``False`` (or use ``--no-tex`` CLI flag) to disable.
     """
     if host not in _HOST_LABELS:
         raise ValueError(f"Unknown host {host!r}; choose 'm12i' or 'm12f'.")
@@ -520,11 +505,7 @@ def plot(
     if backend is None:
         backend = _DEFAULT_BACKEND[host]
 
-    # Resolve use_tex: None → auto-select from backend.
-    # Both reference notebooks (v1 HBT for m12i, 250507 VR for m12f) call:
-    #   rc('font', family='sans-serif', sans-serif=['Helvetica'])
-    #   rc('text', usetex=True)
-    # So the default is True for both backends.
+    # Resolve use_tex: None → True (LaTeX on for both backends).
     if use_tex is None:
         use_tex = True
 
@@ -545,24 +526,24 @@ def plot(
         nfw_data.append(np.genfromtxt(str(np_)))
         converg_list.append(float(np.genfromtxt(str(cp))))
 
-    # TeX setup (mirrors v1 notebook's rc() calls).
+    # TeX setup.
     if use_tex:
         rc("font", **{"family": "sans-serif", "sans-serif": ["Helvetica"]})
         rc("text", usetex=True)
 
-    # Choose plot style parameters based on backend / host.
-    # v1 HBT (m12i): filter x>1e-4, interpolate ratio, dpi=300.
-    # VR 250507 (m12f): no x>1e-4 filter in main loop, direct ratio, dpi=1200.
+    # Plot style differs between the two published panels:
+    #   hbt (m12i): drop points with x <= 1e-4, interpolate the ratio, dpi=300.
+    #   vr  (m12f): no x cut in the main panel, direct ratio, dpi=1200.
     use_hbt_style = (backend == "hbt")
     dpi = 300 if use_hbt_style else 1200
-    legend_fontsize = 13  # both reference notebooks use ax0.legend(fontsize=13)
+    legend_fontsize = 13
 
     all_labels = (
         _LABELS_TEX[host] if use_tex else _LABELS_PLAIN[host]
     )
     line_styles = _LINE_STYLES  # ("C1", "C2", "C3", "C1--", "C2--", "C3--")
 
-    # Build figure (source: figsize=(6,8), height_ratios=[7,3]).
+    # Build figure.
     fig = plt.figure(figsize=(6, 8))
     gs = gridspec.GridSpec(2, 1, height_ratios=[7, 3])
     ax0 = fig.add_subplot(gs[0])
@@ -572,13 +553,13 @@ def plot(
     all_arrays = sim_data + nfw_data  # [cdmo_sim, deep_sim, soft_sim, cdmo_nfw, deep_nfw, soft_nfw]
     for i, (data, label, ls) in enumerate(zip(all_arrays, all_labels, line_styles)):
         if use_hbt_style:
-            # v1: filter non-zero AND x > 1e-4
+            # hbt: keep non-zero points with x > 1e-4
             d = data[(data[:, 1] != 0) & (data[:, 0] > 1e-4)]
         else:
             d = data[data[:, 1] != 0]
         ax0.plot(d[:, 0], d[:, 1], ls, label=label)
 
-    # Convergence shading: v1 uses only cdmo radius; 250507 also only cdmo.
+    # Convergence shading uses the PL (cdmo) convergence radius.
     x1 = 1e-4
     x2 = converg_list[0]  # cdmo convergence radius
     unresolved_label = (
@@ -609,7 +590,7 @@ def plot(
     soft_data = sim_data[2]
 
     if use_hbt_style:
-        # v1: interpolate BT sims to cdmo x-grid (only x>1e-4, non-zero cdmo).
+        # hbt: interpolate BT profiles onto the PL x-grid (x > 1e-4, non-zero PL).
         cdmo_filtered = cdmo_data[(cdmo_data[:, 0] > 1e-4) & (cdmo_data[:, 1] != 0)]
         x_ref = cdmo_filtered[:, 0]
         deep_interp = _interp_data(deep_data, x_ref)
@@ -621,8 +602,8 @@ def plot(
         ax1.plot(x_ref, soft_ratio, line_styles[2],
                  label=r"$\rm{m12i\_soft}$" if use_tex else "m12i_soft")
     else:
-        # 250507: divide on the full (unfiltered) shared x-grid, then filter.
-        # The simulation_1 files share the same bin edges, so arrays are same length.
+        # vr: the three profiles share the same bins; divide directly, then
+        # drop zeros.
         deep_ratio = np.transpose(np.array([
             cdmo_data[:, 0],
             np.divide(deep_data[:, 1], cdmo_data[:, 1]),
@@ -640,7 +621,7 @@ def plot(
 
     ratio_ylabel = r"$N_{\rm BT}/N_{\rm PL}$" if use_tex else "$N_{BT}/N_{PL}$"
     ax1.set_ylabel(ratio_ylabel, fontsize=20)
-    # Both reference notebooks have ax1.legend commented out → no ax1 legend.
+    # No legend on the ratio panel.
     ax1.axhline(y=1.0, color="black", linestyle="-", alpha=0.3)
 
     # Tick styling.

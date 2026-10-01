@@ -1,13 +1,6 @@
 """Fig 8: Halo Radial Function (HRF) in four Mbound mass bins.
 Fig 13: HBT-HERONS vs VR-SOAP HRF comparison, same four bins.
-
-Source notebooks (Type 1 extract + Type 2 comparison):
-  paper_figures_min_20_HBTplus_v1_archive/HRF_auto_bin/{6,7,8,9}/
-    HRF_hbtplus.ipynb                    (Type 1 – extract HBT)
-    comparison_HRF_auto_bin_{n}_HBTplus.ipynb  (Type 2 – plot fig 8)
-  paper_figures_min_20_HBTplus_v1_archive/comparison_with_VR-SOAP/HRF_auto_bin/{6,7,8,9}/
-    HRF_VR-SOAP.ipynb                    (Type 1 – extract VR-SOAP)
-    comparison_HRF_auto_bin_{n}_HBTplus_vs_VR.ipynb  (Type 2 – plot fig 13)
+Fig 18: HRF resolution study, same four bins.
 """
 
 from __future__ import annotations
@@ -31,7 +24,7 @@ from ..paths import cache_dir, data_dir, figures_dir
 
 MASS_BINS: tuple[int, ...] = (6, 7, 8, 9)
 
-# Suptitle per mass bin (TeX strings matching the reference notebooks).
+# Suptitle per mass bin.
 _SUPTITLES: dict[int, str] = {
     6: r"$10^6<{M_{\rm sub}}/{\rm M}_{\odot}<10^{7}$",
     7: r"$10^7<{M_{\rm sub}}/{\rm M}_{\odot}<10^{8}$",
@@ -159,7 +152,7 @@ def extract(sim_label: str, mass_bin: int, *, refresh: bool = False) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# Interpolation helper (same as v1 notebook's interp_data)
+# Interpolation helper
 # ---------------------------------------------------------------------------
 
 def _interp_data(data: np.ndarray, x_new: np.ndarray) -> np.ndarray:
@@ -414,7 +407,7 @@ def plot_resolution_study(
     plt.close(fig)
     return out_path
 
-# m12i sims only (archive only has m12i comparison)
+# m12i sims only (the paper's VR comparison uses m12i)
 _VR_LABELS: tuple[str, ...] = ("m12i_cdmo", "m12i_btps_deep", "m12i_btps_soft")
 _VR_LINE_STYLES: tuple[str, ...] = ("C1", "C2", "C3", "C1-.", "C2-.", "C3-.")
 _VR_LEGEND_HBT: tuple[str, ...] = (

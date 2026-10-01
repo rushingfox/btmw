@@ -1,12 +1,7 @@
 """Fig 10: R_max vs V_max relation (RvsV).
+Fig 17: RvsV resolution study.
 
-Source notebooks:
-  paper_figures_min_20_HBTplus_v1_archive/RvsV/
-    RvsV_hbtplus.ipynb                 (Type 1 – extract from SOAP)
-    comparison_RvsV_m12i.ipynb         (Type 2 – plot m12i)
-    comparison_RvsV_m12f.ipynb         (Type 2 – plot m12f)
-
-Algorithm (Type 1):
+Extraction:
   * Open SOAP halo_properties (HBT-backed).
   * Main halo = argmax(BoundSubhalo/TotalMass).
   * Select subhalos within R200c of main halo (by HaloCentre distance).
@@ -18,12 +13,11 @@ Algorithm (Type 1):
   * Output: three files  {label}_RvsV_{Lower,Median,Upper}
     columns: (V_center [km/s], Rmax_percentile [kpc])  — NaN for empty bins.
 
-Plot (Type 2):
-  * Two panels side-by-side? No — two separate figures: m12i and m12f.
-  * Each figure: two-panel (height_ratios=[7, 3]), figsize=(6, 8).
+Plot:
+  * One figure per host (m12i and m12f), each two-panel (height_ratios=[7, 3]), figsize=(6, 8).
   * Main panel (ax0):
     - 3 sim Median lines + fill_between(Lower, Upper).
-    - Rockstar reference (black line).
+    - Grand & White (2021) reference (black line, "Robert result" in the legend).
     - Grey axvspan for unresolved region.
     - Filter: data = data[(data[:,1]!=0) & ~np.isnan(data[:,1])] before plotting.
   * Ratio panel (ax1): BT_deep/PL and BT_soft/PL (Median only, interpolated).
@@ -58,10 +52,10 @@ from ..paths import cache_dir, data_dir, figures_dir
 # Constants
 # ---------------------------------------------------------------------------
 
-# Rmax field in SOAP (not yet in io_soap constants)
+# Rmax field in SOAP
 _SOAP_RMAX = "/BoundSubhalo/MaximumCircularVelocityRadiusUnsoftened"
 
-# Percentile levels (match reference notebook)
+# Percentile levels
 _LOWER_PCT  = 16
 _MEDIAN_PCT = 50
 _UPPER_PCT  = 84
@@ -69,17 +63,18 @@ _UPPER_PCT  = 84
 # Velocity bin width in log10 (same as HVF)
 _V_RESO = 0.1
 
-# Unresolved region x2 (km/s) per host — derived from softening * particle mass
+# Unresolved region x2 (km/s) per host: the HVF unresolved bound (Vmax/V200c,
+# see hvf.UNRESOLVED_BOUND) times the host V200c [cm/s], converted to km/s.
 _UNRESOLVED_X2 = {
     "m12i": 0.02995634129285346 * 14231044.216963861 / 1e5,   # ≈ 4.263
     "m12f": 0.0247377586709585  * 15862762.136794837 / 1e5,   # ≈ 3.924
 }
 
-# Reference: Grand & White (2021), referred to as "Robert result" in figure legends.
-# Variable named _ROCKSTAR_FILE because Rockstar is the halo finder used in that paper.
+# Reference curve (black line): Grand & White (2021), "Robert result" in the
+# figure legend.
 _ROCKSTAR_FILE = data_dir() / "external" / "grand2021_rmax_r200c.txt"
 
-# Sim groups per host (plot order matches reference)
+# Sim groups per host (plot order: PL, BT_deep, BT_soft)
 _HOST_SIMS = {
     "m12i": ["m12i_cdmo", "m12i_btps_deep", "m12i_btps_soft"],
     "m12f": ["m12f_cdmo", "m12f_btps_deep", "m12f_btps_soft"],
@@ -111,7 +106,7 @@ def _cache_path(sim_label: str, which: str) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# Extract: Type 1  (slow — reads SOAP HDF5)
+# Extract (slow — reads SOAP HDF5)
 # ---------------------------------------------------------------------------
 
 def extract(sim_label: str, *, refresh: bool = False) -> dict[str, Path]:
@@ -217,7 +212,7 @@ def _plot_host(host: str, *, refresh: bool, use_tex: bool) -> Path:
         ax0.plot(d_plot[:, 0], d_plot[:, 1], line_styles[i],
                  label=_LABEL_MAP[label])
 
-    # Rockstar reference
+    # Grand & White (2021) reference
     ax0.plot(rockstar[:, 0], rockstar[:, 1], color="black",
              label=r"$\rm{Robert\ result\ for\ }R_{200c}$")
 
@@ -352,7 +347,7 @@ def plot_resolution_study(
         d_plot = d[(d[:, 1] != 0) & ~np.isnan(d[:, 1])]
         ax0.plot(d_plot[:, 0], d_plot[:, 1], _LINE_STYLES[i], label=tex)
 
-    # Rockstar reference
+    # Grand & White (2021) reference
     ax0.plot(rockstar[:, 0], rockstar[:, 1], color="black",
              label=r"$\rm{Robert\ result\ for\ }R_{200c}$")
 

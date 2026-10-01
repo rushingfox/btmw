@@ -14,7 +14,7 @@ Analysis code for the **blue-tilt primordial power-spectrum × Milky-Way simulat
 > *"Cosmological zoom-in simulations of Milky Way host mass dark matter halos with a blue-tilted primordial power spectrum"*,
 > Phys. Rev. D, [10.1103/59fw-974t](https://doi.org/10.1103/59fw-974t) (arXiv:[2412.16072](https://arxiv.org/abs/2412.16072)).
 
-This repository reproduces every figure in the paper from raw simulation outputs (SWIFT snapshots + SOAP / HBT-HERONS / VELOCIraptor catalogs), with intermediate per-figure caches checked in so each figure can also be regenerated quickly without access to the raw data.
+This repository reproduces every simulation-based figure in the paper (Figs 4–18) from raw simulation outputs (SWIFT snapshots + SOAP / HBT-HERONS / VELOCIraptor catalogs), with intermediate per-figure caches checked in so each figure can also be regenerated quickly without access to the raw data.
 
 <p align="center">
   <img src="figures/m12i_cdmo_projection_map_200kpc.png"      width="30%" alt="m12i PL projection map">
@@ -55,13 +55,11 @@ pip install -e .
 
 After installation, the `btmw` command is available in your shell from any directory. Edits to files under `src/btmw/` take effect immediately — no reinstall needed. If you don't want LaTeX rendering, pass `--no-tex` to any plotting subcommand.
 
-To run the public smoke tests (always run this after install to confirm the package, configs, external data, and CLI resolve):
+To run the tests (always run this after install to confirm the package, configs, external data, checked-in caches, and CLI resolve; no raw data needed):
 
 ```bash
-pytest tests/test_smoke.py
+pytest tests/
 ```
-
-The remaining regression tests compare checked-in caches against the original archive and/or raw simulation outputs on the CUHK cluster. They are intended for author-side validation rather than as a public installation check.
 
 ---
 
@@ -70,6 +68,7 @@ The remaining regression tests compare checked-in caches against the original ar
 ```
 configs/
   simulations.yaml      # SOAP / HBT / VR / snapshot paths for all 9 zoom sims
+  pipeline/             # SWIFT / HBT-HERONS / VELOCIraptor / SOAP configs used to run the sims
 data/
   external/             # digitized reference curves (COCO, Cautun, Aquarius, ...)
   cache/                # per-figure intermediate npz/txt files (small, in git)
@@ -82,9 +81,11 @@ src/btmw/
   io_soap.py            # h5py readers for SOAP halo catalogs
   figures/              # one module per paper figure (extract + plot)
 scripts/
-  *.sbatch              # cluster job templates
+  *.sbatch              # cluster job templates (one per figure group)
+  pack_raw_data.sbatch  # packs the raw-data archive uploaded to Zenodo
 tests/
   test_smoke.py         # CLI / config / external-data smoke tests
+  test_mvsv.py          # checks the checked-in Fig 14 caches
 figures/                # output PNGs — tracked in git so figures are reproducible from git alone
 figures_static/         # conceptual_flow.png (hand-drawn fig 1, PRD version)
 logs/                   # sbatch stdout/stderr (gitignored except .gitkeep)
@@ -114,7 +115,7 @@ Figures 4–18 are fully reproduced by this pipeline. Three figures are excluded
 - **Fig 2** — power-spectrum plot generated from the `input_powerspec.txt` output of [MUSIC](https://github.com/lue/music); not reproduced by this pipeline.
 - **Fig 3** — HMF curve from the external `genmf` C program; not reproduced here.
 
-Where the paper has both an arXiv v1 and a **PRD version**, this pipeline targets the PRD version (figs 1, 5-right-panel, 11) and falls back to v1 for everything else.
+All reproduced figures match the published PRD version (arXiv v3).
 
 ```bash
 # Fig 4: matter projection maps (m12i CDMO / BT_deep / BT_soft) — uses swiftsimio
@@ -123,8 +124,8 @@ btmw projection-map --sim m12i_btps_deep
 btmw projection-map --sim m12i_btps_soft
 
 # Fig 5: radial density profile (m12i and m12f main halo)
-#   m12i: HBT-HERONS center (default)
-#   m12f: VELOCIraptor center [PRD version] (default)
+#   m12i: HBT-HERONS centre (default, as in the paper)
+#   m12f: VELOCIraptor centre (default, as in the paper)
 btmw radial-density --host m12i
 btmw radial-density --host m12f
 
@@ -140,7 +141,7 @@ btmw hrf --bin 6 --bin 7 --bin 8 --bin 9
 btmw rvsv
 
 # Fig 11/12/13: HBT-HERONS vs VELOCIraptor comparison
-btmw hmf --compare-vr    # fig 11 [PRD version]
+btmw hmf --compare-vr    # fig 11
 btmw hvf --compare-vr    # fig 12
 btmw hrf --compare-vr --bin 6 --bin 7 --bin 8 --bin 9   # fig 13
 
@@ -222,11 +223,9 @@ in [data/external/README.md](data/external/README.md):
 - **Lovell 2014** (`lovell2014_cmf_r200c.txt`) cumulative substructure mass-fraction profile — used by `btmw cmf`. Source: [Lovell+ 2014](https://doi.org/10.1093/mnras/stt2431).
 - **Grand & White 2021** (`grand2021_rmax_r200c.txt`) Rmax–Vmax relation for subhalos within R200c (referred to as "Robert result" in figure legends) — used by `btmw rvsv` variants. Source: [Grand & White 2021](https://doi.org/10.1093/mnras/staa3993).
 
-The black M-Vmax baseline in `btmw mvsv` is not a text-table overlay: it is a
-hard-coded analytic BolshoiP+MDPL power-law in `src/btmw/figures/mvsv.py`.
-Old COCO M-Vmax/R-Vmax digitizations that are not used by the current code path
-are parked temporarily in [data/external/trash/](data/external/trash/) pending a
-full reproduction run.
+The black M-Vmax baseline in `btmw mvsv` is not a text-table overlay: it is the
+analytic BolshoiP+MDPL relation of [Rodríguez-Puebla+ 2016](https://doi.org/10.1093/mnras/stw1705),
+hard-coded in `src/btmw/figures/mvsv.py`.
 
 No external power-spectrum or `c(M)` model is needed for this paper; `colossus` is **not** a dependency.
 

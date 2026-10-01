@@ -1,11 +1,6 @@
 """Fig 9: Cumulative Mass Fraction (CMF) profile.
 
-Source notebooks (Type 1 extract + Type 2 comparison):
-  {sim}_fof/hbtplus_min_20/CMF_hbtplus_scaled.ipynb   (Type 1 – extract)
-  paper_figures_min_20_HBTplus_v1_archive/CMF/
-    comparison_CMF_HBTplus_scaled.ipynb                (Type 2 – plot)
-
-Algorithm (Type 1):
+Extraction:
   * Open SubSnap_{snap:03d}.0.hdf5 (HBTplus raw output).
   * Filter alive subhalos: SnapshotIndexOfDeath == -1.
   * Main halo = argmax(Mbound[alive]).
@@ -19,7 +14,7 @@ Algorithm (Type 1):
   * result = cumsum(sub) / cumsum(total).
   * Output: (bins[1:], result)  [26 rows, r/R200c vs M_sub(<r)/M_tot(<r)].
 
-Plot (Type 2):
+Plot:
   * Two-panel figure (height_ratios=[7, 3]), figsize=(6, 8).
   * Main panel: 6 sims + Lovell CDM reference.
     lines: ['C1','C2','C3','C1--','C2--','C3--','grey']
@@ -47,7 +42,7 @@ from ..paths import cache_dir, data_dir, figures_dir
 # Constants
 # ---------------------------------------------------------------------------
 
-# Fixed radial bins in r/R200c units (matches reference notebook exactly).
+# Fixed radial bins in r/R200c units.
 # np.arange(-2, 0.5+0.1, 0.1) == np.arange(-2, 0.6, 0.1) → 26 values.
 _BINS_LOG10 = np.arange(-2, 0.6, 0.1)
 _RADIAL_BINS = np.concatenate(([0.0], 10.0 ** _BINS_LOG10))  # 27 edges
@@ -87,7 +82,7 @@ def _cache_path(sim_label: str) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# Extract: Type 1  (slow — reads snapshot + SubSnap HDF5)
+# Extract (slow — reads snapshot + SubSnap HDF5)
 # ---------------------------------------------------------------------------
 
 def extract(sim_label: str, *, refresh: bool = False) -> Path:
@@ -126,7 +121,7 @@ def extract(sim_label: str, *, refresh: bool = False) -> Path:
     # --- R200c from SOAP ---
     with h5py.File(sim.soap_hbt_path(), "r") as f:
         r200c_all = np.array(f["/SO/200_crit/SORadius"])
-    r200c_main = float(r200c_all.max())  # Mpc (matches notebook: R200c.max())
+    r200c_main = float(r200c_all.max())  # Mpc; largest R200c = main halo
 
     # --- DM snapshot ---
     with h5py.File(sim.snapshot_path(), "r") as f:
@@ -168,7 +163,7 @@ def extract(sim_label: str, *, refresh: bool = False) -> Path:
 
 
 # ---------------------------------------------------------------------------
-# Ratio helper (matches reference notebook's `calculate_ratio`)
+# Ratio helper
 # ---------------------------------------------------------------------------
 
 def _calculate_ratio(
@@ -191,7 +186,7 @@ def _calculate_ratio(
 
 
 # ---------------------------------------------------------------------------
-# Plot: Type 2
+# Plot
 # ---------------------------------------------------------------------------
 
 def plot(
@@ -265,7 +260,6 @@ def plot(
     ax1.set_yscale("log")
     ax1.set_ylabel(r"$N_{\rm BT}/N_{\rm PL}$", fontsize=20)
     ax1.axhline(y=1, color="C1", linestyle="-", alpha=0.3)
-    # ax1.legend(fontsize=6)   # commented out in reference notebook
 
     # Tick params
     for ax in (ax0, ax1):
